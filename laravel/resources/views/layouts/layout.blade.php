@@ -1,4 +1,3 @@
-<!-- resources/views/layouts/layout.blade.php -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
