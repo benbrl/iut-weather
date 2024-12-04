@@ -28,30 +28,48 @@
                         <p>Conditions : {{ $weather['weather'][0]['description'] }}</p>
                         <p>Humidité : {{ $weather['main']['humidity'] }}%</p>
                         <div class="flex justify-center mt-4">
-                            <button
+                            <a
                                 class="flex items-center px-4 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80">
-
                                 <span class="mx-1">Download CSV</span>
-                            </button>
+                            </a>
                             <a href="{{ route('forecast', ['city' => strtolower($weather['name'])]) }}"
                                 class="px-4 py-2 font-medium tracking-wide text-white bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80">
                                 Voir les prévisions
                             </a>
-                            <button
+
+                            <form method="POST" @csrf <div
                                 class="flex items-center px-4 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80">
-
-                                <span class="mx-1">ajouter aux favoris</span>
-                            </button>
+                                <button type="submit" name="name" class="mx-1"
+                                    value="{{ strtolower($weather['name']) }}">ajouter aux favoris</button>
                         </div>
-                    @elseif (isset($error))
-                        <p>{{ $error }}</p>
-                    @endif
 
+                        </form>
+
+
+
+                        <form method="POST" action="{{ route('savecity') }}">
+                            @csrf
+
+                            <div
+                                class="flex items-center px-4 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80">
+                                <button type="submit" name="name" class="mx-1"
+                                    value="{{ strtolower($weather['name']) }}">Enregistrement Ville</button>
+                            </div>
+
+                        </form>
+
+
+                        <a href="" </a>
                 </div>
+            @elseif (isset($error))
+                <p>{{ $error }}</p>
+                @endif
 
             </div>
 
         </div>
+
+    </div>
 
     </div>
 
