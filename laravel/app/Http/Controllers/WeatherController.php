@@ -148,17 +148,7 @@ class WeatherController extends Controller
         return redirect()->route('saved')->with('status', 'Ville retirée des favoris.');
     }
 
-    public function subscribeReport($city_id)
-    {
-        $user_id = Auth::id();
-
-        // Active l'option d'envoi de prévisions quotidiennes
-        PlaceUser::where('user_id', $user_id)
-            ->where('place_id', $city_id)
-            ->update(['send_forecast' => true]);
-
-        return redirect()->route('saved')->with('status', 'Inscription au rapport journalier réussie.');
-    }
+   
 
 
 
@@ -176,11 +166,74 @@ class WeatherController extends Controller
             ->where('place_id', $city_id)
             ->delete();
 
-        // Vérifier si la suppression a bien été effectuée
+        
         if ($deleted) {
             return redirect()->route('saved')->with('success', 'La ville a été supprimée de vos favoris.');
         } else {
             return redirect()->route('saved')->with('error', 'Erreur lors de la suppression de la ville.');
         }
     }
+
+
+
+    public function subscribeReport($city_id)
+    {
+        $user_id = Auth::id();
+
+        // Active l'option d'envoi de prévisions quotidiennes
+        PlaceUser::where('user_id', $user_id)
+            ->where('place_id', $city_id)
+            ->update(['send_forecast' => true]);
+
+        return redirect()->route('saved')->with('status', 'Inscription au rapport journalier réussie.');
+    }
+
+
+
+    public function downloadCSV(Request $request)
+{
+    $request->validate([
+        'city' => 'required|string|max:255',
+    ]);
+
+    $city = $request->input('city');
+
+    // Récupérer les données météo via l'API
+    $response = Http::get("$this->baseUrl/data/2.5/weather", [
+        'q' => $city,
+        'appid' => $this->apiKey,
+        'units' => 'metric',
+        'lang' => 'fr',
+    ]);
+
+    if ($response->failed()) {
+        return redirect()->back()->with('error', 'Impossible de récupérer les données météo pour générer le CSV.');
+    }
+
+    $data = $response->json();
+
+    // Headers pour la réponse CSV
+    $headers = [
+        'Content-Type' => 'text/csv',
+        'Content-Disposition' => "attachment; filename=\"{$city}_weather.csv\"",
+    ];
+
+    // Génération du contenu CSV
+    $callback = function () use ($data) {
+        $file = fopen('php://output', 'w');
+        // En-têtes CSV
+        fputcsv($file, ['Ville', 'Température (°C)', 'Description', 'Humidité (%)']);
+        // Données météo
+        fputcsv($file, [
+            $data['name'],
+            $data['main']['temp'],
+            $data['weather'][0]['description'],
+            $data['main']['humidity'],
+        ]);
+        fclose($file);
+    };
+
+    return response()->stream($callback, 200, $headers);
+}
+
 }

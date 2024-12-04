@@ -26,7 +26,13 @@ Route::delete('/remove-city', [WeatherController::class, 'removeCity'])->name('r
 
 
 Route::get('/add-favorite/{city_id}', [WeatherController::class, 'addFavorite'])->name('add_favorite');
-Route::get('/remove-favorite/{city_id}', [WeatherController::class, 'removeFavorite'])->name('remove_favorite');
+Route::delete('/remove-favorite/{city_id}', [WeatherController::class, 'removeFavorite'])->name('remove_favorite');
+
+
+Route::get('/download-csv', [WeatherController::class, 'downloadCSV'])->name('download.csv');
+
+
+
 Route::get('/subscribe-report/{city_id}', [WeatherController::class, 'subscribeReport'])->name('subscribe_report');
 
 
