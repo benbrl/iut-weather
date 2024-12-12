@@ -18,14 +18,13 @@ class CityCoordinatesController extends Controller
         $apiKey = config('services.openweather.api_key');
         $baseUrl = config('services.openweather.base_url');
 
-        // Faire la requête à l'API OpenWeather
+      
         $response = Http::get("${baseUrl}/geo/1.0/direct", [
             'q' => $city,
             'limit' => 1,
             'appid' => $apiKey,
         ]);
 
-        // Vérifier si la réponse est valide
         if ($response->successful()) {
             $data = $response->json();
             if (!empty($data)) {
@@ -36,9 +35,9 @@ class CityCoordinatesController extends Controller
                     'longitude' => $longitude,
                 ]);
             }
-            return response()->json(['message' => 'Aucune ville trouvée'], 404);
+            return response()->json(['message' => 'No cities found'], 404);
         }
 
-        return response()->json(['message' => 'Erreur lors de la récupération des données'], $response->status());
+        return response()->json(['message' => 'Error recovery data'], $response->status());
     }
 }

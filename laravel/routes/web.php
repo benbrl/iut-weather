@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WeatherController;
 use App\Http\Controllers\ForecastController;
 use App\Http\Controllers\CityCoordinatesController;
+use App\Http\Controllers\CityController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
@@ -21,15 +23,16 @@ Route::get('/saved', [WeatherController::class, 'GetCitySaved'])->name('saved');
 Route::get('/forecast/{city?}', [ForecastController::class, 'getForecastWeather'])->name('forecast');
 Route::get('/city-coordinates', [CityCoordinatesController::class, 'getCityCoordinates'])->name('citycoordinates');
 
-Route::get('/save-city', [WeatherController::class, 'saveCity'])->name('savecity');
-Route::delete('/remove-city', [WeatherController::class, 'removeCity'])->name('removeCity');
 
+//city controller
+Route::post('/save-city', [CityController::class, 'saveCity'])->name('savecity');
+Route::delete('/remove-city/{city_id}', [CityController::class, 'removeCity'])->name('removeCity');
 
-Route::get('/add-favorite/{city_id}', [WeatherController::class, 'addFavorite'])->name('add_favorite');
-Route::delete('/remove-favorite/{city_id}', [WeatherController::class, 'removeFavorite'])->name('remove_favorite');
+Route::post('/add-favorite/{city_id}', [CityController::class, 'addFavorite'])->name('add_favorite');
+Route::delete('/remove-favorite/{city_id}', [CityController::class, 'removeFavorite'])->name('remove_favorite');
 
-
-Route::get('/download-csv', [WeatherController::class, 'downloadCSV'])->name('download.csv');
+//export controller
+Route::get('/download-csv', [ExportController::class, 'downloadCSV'])->name('download.csv');
 
 
 

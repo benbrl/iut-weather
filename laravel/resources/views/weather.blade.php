@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h1>Conditions Météorologiques</h1>
+                    <h1>Weather Conditions</h1>
                     <form method="GET" action="{{ route('weather') }}">
                         <div class="flex-grow">
                             <label for="city">Find City</label>
@@ -23,57 +23,57 @@
                     </form>
 
                     @if (isset($weather))
-                        <h2>Ville : {{ $weather['name'] }}</h2>
-                        <p>Température : {{ $weather['main']['temp'] }} °C</p>
-                        <p>Conditions : {{ $weather['weather'][0]['description'] }}</p>
-                        <p>Humidité : {{ $weather['main']['humidity'] }}%</p>
-                        <div class="flex justify-center mt-4">
+                        <h2>City: {{ $weather['name'] }}</h2>
+                        <p>Temperature: {{ $weather['main']['temp'] }} °C</p>
+                        <p>Conditions: {{ $weather['weather'][0]['description'] }}</p>
+                        <p>Humidity: {{ $weather['main']['humidity'] }}%</p>
+
+                        <div class="flex justify-center mt-4 space-x-4">
                             <!-- Download CSV -->
                             <a href="{{ route('download.csv', ['city' => strtolower($weather['name'])]) }}"
-                                class="flex items-center px-4 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80">
+                               class="flex items-center px-4 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80">
                                 <span class="mx-1">Download CSV</span>
                             </a>
-                        
+
                             <!-- Voir les prévisions -->
                             <a href="{{ route('forecast', ['city' => strtolower($weather['name'])]) }}"
-                                class="px-4 py-2 font-medium tracking-wide text-white bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80">
+                               class="px-4 py-2 font-medium tracking-wide text-white bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80">
                                 Voir les prévisions
                             </a>
-                        
-                            <!-- Add to favorite -->
-                            <form method="GET" class="flex">
+
+                            <!-- Ajouter ou retirer des favoris -->
+                            @if ($isFavorite) 
+                                <form action="{{ route('remove_favorite', ['city_id' => $weather['id']]) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="flex items-center px-4 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-red-600 rounded-lg hover:bg-red-500 focus:outline-none focus:ring focus:ring-red-300 focus:ring-opacity-80">
+                                        <span class="mx-1">Remove from Favorites</span>
+                                    </button>
+                                </form>
+                            @else
+                                <form action="{{ route('add_favorite', ['city_id' => $weather['id']]) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="flex items-center px-4 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80">
+                                        <span class="mx-1">Add to Favorites</span>
+                                    </button>
+                                </form>
+                            @endif
+
+                            <!-- Save City -->
+                            <form method="POST" action="{{ route('savecity') }}">
                                 @csrf
-                                <button type="submit" name="name" value="{{ strtolower($weather['name']) }}"
-                                    class="flex items-center px-4 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80">
-                                    <span class="mx-1">Add to favorite</span>
+                                <input type="hidden" name="name" value="{{ strtolower($weather['name']) }}">
+                                <button type="submit" class="flex items-center px-4 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80">
+                                    <span class="mx-1">Save City</span>
                                 </button>
                             </form>
+                            
                         </div>
-                        
-                        <!-- Save City -->
-                        <form method="GET" action="{{ route('savecity') }}" class="mt-4">
-                            @csrf
-                            <div
-                                class="flex items-center px-4 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80">
-                                <button type="submit" name="name" value="{{ strtolower($weather['name']) }}">
-                                    Save City
-                                </button>
-                            </div>
-                        </form>
-                        
-                        
-                        
-            @elseif (isset($error))
-                <p>{{ $error }}</p>
-                @endif
-
+                    @elseif (isset($error))
+                        <p>{{ $error }}</p>
+                    @endif
+                </div>
             </div>
-
         </div>
-
     </div>
-
-    </div>
-
-
 </x-app-layout>

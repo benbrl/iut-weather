@@ -20,7 +20,7 @@ class ForecastController extends Controller
     public function getForecastWeather($city = null)
     {
         if ($city === null) {
-            return view('weather', ['error' => 'Aucune ville spécifiée.']);
+            return view('weather', ['error' => 'No city specified.']);
         }
 
     
@@ -36,7 +36,7 @@ class ForecastController extends Controller
             $forecastData = $response->json();
             return view('forecast', ['forecast' => $forecastData]);
         } else {
-            return view('forecast', ['error' => 'Impossible de récupérer les données météo']);
+            return view('forecast', ['error' => 'Impossible to get weather data']);
         }
     }
 }

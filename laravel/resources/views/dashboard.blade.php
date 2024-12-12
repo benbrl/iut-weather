@@ -28,7 +28,7 @@
                         <h3 class="text-lg font-semibold">Favorite city</h3>
                         @if ($favoriteCity && $favoriteCity->place)
                             <div class="mt-2 p-4 bg-gray-100 dark:bg-gray-700 rounded">
-                                <p><strong>Namee :</strong> {{ $favoriteCity->place->name }}</p>
+                                <p><strong>Name :</strong> {{ $favoriteCity->place->name }}</p>
                               
                                 @if ($weatherData)
                                     <p><strong>Weather:</strong> {{ $weatherData['weather'][0]['description'] }}</p>
@@ -38,9 +38,13 @@
                                 @else
                                     <p>Impossible to retrieve weather data for this city.</p>
                                 @endif
-                                <a href="{{ route('remove_favorite', ['city_id' => $favoriteCity->place->id]) }}" class="mt-4 inline-block px-4 py-2 bg-red-600 text-white rounded">
-                                Delete favorites
-                                </a>
+                                <form action="{{ route('remove_favorite', ['city_id' => $favoriteCity->place->id]) }}" method="POST" class="mt-4">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="inline-block px-4 py-2 bg-red-600 text-white rounded">
+                                           Delete favorites
+                                        </button>
+                                    </form>
                             </div>
                         @else
                             <p>No favorite city defined.</p>
