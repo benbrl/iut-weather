@@ -40,7 +40,6 @@ class ExportController extends Controller
 
     $data = $response->json();
 
-    // Headers pour la réponse CSV
     $headers = [
         'Content-Type' => 'text/csv',
         'Content-Disposition' => "attachment; filename=\"{$city}_weather.csv\"",

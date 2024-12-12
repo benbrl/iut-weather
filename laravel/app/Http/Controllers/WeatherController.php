@@ -27,13 +27,14 @@ class WeatherController extends Controller
         $request->validate([
             'city' => 'string|max:255',
         ]);
+    
         $city = $request->input('city');
     
         if (!$city) {
             return view('weather', ['error' => 'No city specified.']);
         }
     
-        
+    
         $response = Http::get("$this->baseUrl/data/2.5/weather", [
             'q' => $city,
             'appid' => $this->apiKey,
@@ -44,26 +45,47 @@ class WeatherController extends Controller
         if ($response->successful()) {
             $weatherData = $response->json();
     
-            // Check if city is in favorites
+        
             $user_id = Auth::id();
             $isFavorite = false;
+            $isSaved = false;
+            $cityId = null;
     
-            if (isset($weatherData['id'])) {
-                $isFavorite = PlaceUser::where('user_id', $user_id)
-                                       ->where('place_id', $weatherData['id'])
-                                       ->where('is_favorite', true)
-                                       ->exists();
+            if (isset($weatherData['name'])) {
+                $existingPlace = AddFavoriteCity::where('name', strtolower($weatherData['name']))->first();
+    
+                if ($existingPlace) {
+                    $cityId = $existingPlace->id; 
+    
+                    // check if cities is in favorite
+                    $isFavorite = PlaceUser::where('user_id', $user_id)
+                        ->where('place_id', $existingPlace->id)
+                        ->where('is_favorite', true)
+                        ->exists();
+    
+                    // Vérification si la ville est enregistrée pour l'utilisateur
+                    $isSaved = PlaceUser::where('user_id', $user_id)
+                        ->where('place_id', $existingPlace->id)
+                        ->exists();
+                }
             }
     
+            // Return view with data
             return view('weather', [
                 'weather' => $weatherData,
                 'isFavorite' => $isFavorite,
+                'isSaved' => $isSaved,
+                'cityId' => $cityId,  
             ]);
         } else {
             return view('weather', ['error' => 'Impossible to retrieve weather data']);
         }
     }
+    
 
+
+
+    
 
     public function GetCitySaved()
     {

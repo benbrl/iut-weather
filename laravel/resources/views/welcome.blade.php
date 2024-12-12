@@ -1,6 +1,6 @@
 @extends('layouts.layout')
 
-@section('title', 'Accueil')
+@section('title', 'Home')
 
 @section('content')
     <div class="container px-6 py-16 mx-auto text-center">

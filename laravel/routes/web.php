@@ -26,17 +26,21 @@ Route::get('/city-coordinates', [CityCoordinatesController::class, 'getCityCoord
 
 //city controller
 Route::post('/save-city', [CityController::class, 'saveCity'])->name('savecity');
+;
+
+Route::delete('/remove-favorite/{city_id}', [CityController::class, 'removeFavorite'])->name('remove_favorite');
 Route::delete('/remove-city/{city_id}', [CityController::class, 'removeCity'])->name('removeCity');
 
+
 Route::post('/add-favorite/{city_id}', [CityController::class, 'addFavorite'])->name('add_favorite');
-Route::delete('/remove-favorite/{city_id}', [CityController::class, 'removeFavorite'])->name('remove_favorite');
+
 
 //export controller
 Route::get('/download-csv', [ExportController::class, 'downloadCSV'])->name('download.csv');
 
 
 
-Route::get('/subscribe-report/{city_id}', [WeatherController::class, 'subscribeReport'])->name('subscribe_report');
+Route::post('/subscribe-report/{city_id}', [WeatherController::class, 'subscribeReport'])->name('subscribe_report');
 
 
 

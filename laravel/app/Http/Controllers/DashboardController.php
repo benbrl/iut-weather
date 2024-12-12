@@ -13,7 +13,7 @@ class DashboardController extends Controller
     {
         $user_id = Auth::id();
 
-        // Récupérer la ville favorite de l'utilisateur
+       
         $favoriteCity = PlaceUser::with('place')
                             ->where('user_id', $user_id)
                             ->where('is_favorite', true)
@@ -21,11 +21,11 @@ class DashboardController extends Controller
 
         $weatherData = null;
 
-        // Si une ville favorite est trouvée, récupérer les informations météo
+        
         if ($favoriteCity && $favoriteCity->place) {
             $cityName = $favoriteCity->place->name;
-            
-            // Appel à l'API météo
+
+            //call api
             $weatherResponse = Http::get(config('services.openweather.base_url') . '/data/2.5/weather', [
                 'q' => $cityName,
                 'appid' => config('services.openweather.api_key'),
@@ -38,7 +38,6 @@ class DashboardController extends Controller
             }
         }
 
-        // Passer les données à la vue du tableau de bord
         return view('dashboard', [
             'favoriteCity' => $favoriteCity,
             'weatherData' => $weatherData

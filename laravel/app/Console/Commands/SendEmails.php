@@ -28,7 +28,7 @@ class SendEmails extends Command
      */
     public function handle()
     {
-        // Récupérer tous les utilisateurs abonnés
+        // Get all subscribed users
         $subscribedUsers = PlaceUser::where('send_forecast', true)->get();
 
         foreach ($subscribedUsers as $subscription) {

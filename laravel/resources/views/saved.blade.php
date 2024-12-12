@@ -27,7 +27,8 @@
                         <div class="mt-4 flex flex-wrap gap-4">
                             <!-- add or remove favorite city -->
                             @if ($city->is_favorite)
-                                <form action="{{ route('remove_favorite', ['city_id' => $city->place->id]) }}" method="POST">
+                                <form action="{{ route('remove_favorite', ['city_id' => $city->place->id]) }}"
+                                    method="POST">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
@@ -36,7 +37,8 @@
                                     </button>
                                 </form>
                             @else
-                                <form action="{{ route('add_favorite', ['city_id' => $city->place->id]) }}" method="POST">
+                                <form action="{{ route('add_favorite', ['city_id' => $city->place->id]) }}"
+                                    method="POST">
                                     @csrf
                                     <button type="submit"
                                         class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-500 focus:ring focus:ring-blue-300">
@@ -46,33 +48,32 @@
                             @endif
 
 
-                           {{-- @if --}}
-<!-- Button to get daily report -->
-<form action="{{ route('subscribe_report', ['city_id' => $city->place->id]) }}" method="POST">
-    <button type="submit"
-        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-500 focus:ring focus:ring-blue-300">
-        Subscribe to Daily Reports
-    </button>
-</form>
-{{-- @else --}}
-{{-- <form action="{{ route('subscribe_report', ['city_id' => $city->place->id]) }}" method="POST">
-    <button type="submit"
-        class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-500 focus:ring focus:ring-red-300">
-        unsubscribe to  Daily Reports
-    </button>
-</form> --}}
-{{-- @endif --}}
+                            {{-- @if --}}
+                            <!-- Button to get daily report -->
+                            <form action="{{ route('subscribe_report', ['city_id' => $city->place->id]) }}"
+                                method="POST">
+                                <button type="submit"
+                                    class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-500 focus:ring focus:ring-blue-300">
+                                    Subscribe to Daily Reports
+                                </button>
+                            </form>
+                            {{-- @else --}}
+                            {{-- <form action="{{ route('subscribe_report', ['city_id' => $city->place->id]) }}" method="POST">
+                             <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-500 focus:ring focus:ring-red-300">
+                               unsubscribe to  Daily Reports
+                               </button>
+                               </form> --}}
+                            {{-- @endif --}}
 
                             <!-- delete city -->
                             <form action="{{ route('removeCity', ['city_id' => $city->place->id]) }}" method="POST">
-    @csrf
-    @method('DELETE')
-    <button type="submit" class="px-4 py-2 text-sm font-medium text-red-600 bg-red-100 border border-red-400 rounded-lg hover:bg-red-200 focus:ring focus:ring-red-300">
-       Delete City
-    </button>
-</form>
-
-
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                    class="px-4 py-2 text-sm font-medium text-red-600 bg-red-100 border border-red-400 rounded-lg hover:bg-red-200 focus:ring focus:ring-red-300">
+                                    Delete City
+                                </button>
+                            </form>
                         </div>
                     </li>
                 @endforeach

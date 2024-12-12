@@ -9,78 +9,72 @@ use Illuminate\Http\Request;
 class CityController extends Controller
 {
     public function saveCity(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+    ]);
 
-        $name = $request->input('name');
-        $user_id = Auth::id();
+    $name = $request->input('name');
+    $user_id = Auth::id();
 
-        $existingPlace = AddFavoriteCity::where('name', $name)->first();
+    $existingPlace = AddFavoriteCity::where('name', $name)->first();
 
-        if ($existingPlace) {
-            PlaceUser::create([
-                'place_id' => $existingPlace->id,
-                'user_id' => $user_id,
-                'is_favorite' => false,
-                'send_forecast' => false,
-            ]);
+    if ($existingPlace) {
+        $existingPlaceUser = PlaceUser::where('place_id', $existingPlace->id)
+            ->where('user_id', $user_id)
+            ->first();
 
+        if ($existingPlaceUser) {
             return redirect()->route('saved')->with([
-                'status' => 'exists',
-                'message' => 'The city already exists in the list of favorites.',
+                'status' => 'already_favorite',
+                'message' => 'City already added to your favorites.',
                 'user_id' => $user_id,
                 'city_id' => $existingPlace->id
             ]);
+        }
+
+        PlaceUser::create([
+            'place_id' => $existingPlace->id,
+            'user_id' => $user_id,
+            'is_favorite' => false,
+            'send_forecast' => false,
+        ]);
+
+        return redirect()->route('saved')->with([
+            'status' => 'exists',
+            'message' => 'City exists, associated with user.',
+            'user_id' => $user_id,
+            'city_id' => $existingPlace->id
+        ]);
+    } else {
+        $place = AddFavoriteCity::create([
+            'name' => $name,
+            'user_id' => $user_id,
+        ]);
+
+        PlaceUser::create([
+            'place_id' => $place->id,
+            'user_id' => $user_id,
+            'is_favorite' => false,
+            'send_forecast' => false,
+        ]);
+
+        if ($place && $place->id) {
+            return redirect()->route('saved')->with([
+                'status' => 'success',
+                'message' => 'City successfully saved',
+                'user_id' => $user_id,
+                'city_id' => $place->id
+            ]);
         } else {
-            $place = AddFavoriteCity::create([
-                'name' => $name,
-                'user_id' => $user_id,
+            return redirect()->route('saved')->with([
+                'status' => 'error',
+                'message' => 'Error when registering city.'
             ]);
-
-            PlaceUser::create([
-                'place_id' => $place->id,
-                'user_id' => $user_id,
-                'is_favorite' => false,
-                'send_forecast' => false,
-            ]);
-
-            if ($place && $place->id) {
-                return redirect()->route('saved')->with([
-                    'status' => 'success',
-                    'message' => 'City successfully saved',
-                    'user_id' => $user_id,
-                    'city_id' => $place->id
-                ]);
-            } else {
-                return redirect()->route('saved')->with([
-                    'status' => 'error',
-                    'message' => 'Error when registering city.'
-                ]);
-            }
         }
     }
+}
 
-    
-    public function removeCity(Request $request, $city_id)
-    {
-   
-        $user_id = Auth::id();
-    
-        // Delete corresponding entry in place_user table
-        $deleted = PlaceUser::where('user_id', $user_id)
-                            ->where('place_id', $city_id)
-                            ->delete();
-    
-        // Check if the deletion was successful
-        if ($deleted) {
-            return redirect()->back()->with('success', 'La ville a été supprimée de vos favoris.');
-        } else {
-            return redirect()->back()->with('error', 'Une erreur est survenue lors de la suppression de la ville.');
-        }
-    }
-    
 
     public function getCityState($cityName)
 {
@@ -117,18 +111,33 @@ class CityController extends Controller
 
 
 
-
-
     public function removeFavorite($city_id)
-    {
-        $user_id = Auth::id();
+{
+    $user_id = Auth::id();
 
-        // remove city from favorite
-        PlaceUser::where('user_id', $user_id)
-            ->where('place_id', $city_id)
-            ->update(['is_favorite' => false]);
+    // remove city from favorite
+    PlaceUser::where('user_id', $user_id)
+        ->where('place_id', $city_id)
+        ->update(['is_favorite' => false]);
 
-        return redirect()->back()->with('status', 'city remove from favorite');
+    return redirect()->back()->with('status', 'City removed from favorites');
+}
+
+public function removeCity(Request $request, $city_id)
+{
+    $user_id = Auth::id();
+
+    // Delete corresponding entry in place_user table
+    $deleted = PlaceUser::where('user_id', $user_id)
+                        ->where('place_id', $city_id)
+                        ->delete();
+
+    // Check if the deletion was successful
+    if ($deleted) {
+        return redirect()->back()->with('success', 'La ville a été supprimée de vos favoris.');
+    } else {
+        return redirect()->back()->with('error', 'Une erreur est survenue lors de la suppression de la ville.');
     }
+}
 
 }
