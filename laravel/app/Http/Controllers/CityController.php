@@ -140,4 +140,5 @@ public function removeCity(Request $request, $city_id)
     }
 }
 
+
 }

@@ -26,7 +26,7 @@ Route::get('/city-coordinates', [CityCoordinatesController::class, 'getCityCoord
 
 //city controller
 Route::post('/save-city', [CityController::class, 'saveCity'])->name('savecity');
-;
+
 
 Route::delete('/remove-favorite/{city_id}', [CityController::class, 'removeFavorite'])->name('remove_favorite');
 Route::delete('/remove-city/{city_id}', [CityController::class, 'removeCity'])->name('removeCity');
@@ -40,9 +40,12 @@ Route::get('/download-csv', [ExportController::class, 'downloadCSV'])->name('dow
 
 
 
-Route::post('/subscribe-report/{city_id}', [WeatherController::class, 'subscribeReport'])->name('subscribe_report');
+// Route::post('/subscribe-report/{city_id}', [WeatherController::class, 'subscribeReport'])->name('subscribe_report');
+// Route::delete('/unsubscribe-report/{city_id}', [WeatherController::class, 'unsubscribeReport'])->name('un_subscribe_report');
 
 
+Route::post('/subscribe/{city_id}', [WeatherController::class, 'subscribeReport'])->name('subscribe_report');
+Route::post('/unsubscribe/{city_id}', [WeatherController::class, 'unsubscribeReport'])->name('unsubscribe_report');
 
 
 // Route::get('/favorite', function () {

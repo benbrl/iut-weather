@@ -37,7 +37,7 @@
                                     </button>
                                 </form>
                             @else
-                                <form action="{{ route('add_favorite', ['city_id' => $city->place->id]) }}"
+                                                            <form action="{{ route('add_favorite', ['city_id' => $city->place->id]) }}"
                                     method="POST">
                                     @csrf
                                     <button type="submit"
@@ -47,23 +47,30 @@
                                 </form>
                             @endif
 
-
-                            {{-- @if --}}
-                            <!-- Button to get daily report -->
-                            <form action="{{ route('subscribe_report', ['city_id' => $city->place->id]) }}"
-                                method="POST">
-                                <button type="submit"
+                            {{-- Vérification si l'utilisateur est déjà abonné ou non --}}
+                         
+                            @if ($city->send_forecast)
+                                <form action="{{ route('unsubscribe_report', ['city_id' => $city->place->id]) }}"
+                                    method="POST">
+                                    @csrf
+                                    <button type="submit"
+                                    class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-500 focus:ring focus:ring-red-300">
+                                        
+                                        Unsubscribe from Daily Reports
+                                    </button>
+                                </form>
+                            @else
+                                <form action="{{ route('subscribe_report', ['city_id' => $city->place->id]) }}"
+                                    method="POST">
+                                    @csrf
+                                    <button type="submit"
                                     class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-500 focus:ring focus:ring-blue-300">
-                                    Subscribe to Daily Reports
-                                </button>
-                            </form>
-                            {{-- @else --}}
-                            {{-- <form action="{{ route('subscribe_report', ['city_id' => $city->place->id]) }}" method="POST">
-                             <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-500 focus:ring focus:ring-red-300">
-                               unsubscribe to  Daily Reports
-                               </button>
-                               </form> --}}
-                            {{-- @endif --}}
+                                        
+                                        Subscribe to Daily Reports
+                                    </button>
+                                </form>
+                            @endif
+
 
                             <!-- delete city -->
                             <form action="{{ route('removeCity', ['city_id' => $city->place->id]) }}" method="POST">
